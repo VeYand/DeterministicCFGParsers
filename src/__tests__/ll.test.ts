@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {describe, expect} from '@jest/globals'
 
-describe('CanvasModel', () => {
+describe('LL Test', () => {
 
 	beforeEach(() => {
 	})
