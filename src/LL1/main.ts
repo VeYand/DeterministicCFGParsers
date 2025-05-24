@@ -1,17 +1,21 @@
 import {checkProductive, checkReachable} from './grammar/checker'
 import {Grammar} from './grammar/grammar'
 import {parseGrammar} from './grammar/parser'
+import {eliminateLeftRecursion} from './grammar/refactorer'
 
 const input = `
-S -> BEGIN stmt_list END
+S -> BEGIN stmt_list recursion END
 stmt_list -> BEGIN
+recursion -> recursion END | END
 `
 
 const parseGrammarAndCheck = (inputGrammar: string): Grammar => {
-	const [grammar, firstNonTerminal] = parseGrammar(inputGrammar)
+	let [grammar, firstNonTerminal] = parseGrammar(inputGrammar)
 
 	checkReachable(grammar, firstNonTerminal)
 	checkProductive(grammar)
+
+	grammar = eliminateLeftRecursion(grammar)
 
 	return grammar
 }

@@ -1,7 +1,9 @@
 {
   "scripts": {
     "lint": "node eslint.mjs && tsc",
+    "ll1-dev": "npx tsx src/LL1/main.ts",
     "ll1": "node eslint.mjs && tsc && npx tsx src/LL1/main.ts",
+    "slr1-dev": "npx tsx src/SLR1/main.ts",
     "slr1": "node eslint.mjs && tsc && npx tsx src/SLR1/main.ts",
     "test": "jest",
     "test:watch": "jest --watch"
