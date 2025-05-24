@@ -1,7 +1,7 @@
 import {checkProductive, checkReachable} from './grammar/checker'
 import {Grammar} from './grammar/grammar'
 import {parseGrammar} from './grammar/parser'
-import {eliminateLeftRecursion} from './grammar/refactorer'
+import {convertToGreibach, eliminateLeftRecursion} from './grammar/refactorer'
 
 const input = `
 S -> S PLUS T | T
@@ -16,6 +16,7 @@ const parseGrammarAndCheck = (inputGrammar: string): Grammar => {
 	checkProductive(grammar)
 
 	grammar = eliminateLeftRecursion(grammar)
+	grammar = convertToGreibach(grammar)
 
 	return grammar
 }
