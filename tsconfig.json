@@ -22,7 +22,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
 
     // Emit
     "noEmit": true,
@@ -56,6 +56,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
+    "node_modules/@types/jest/index.d.ts"
   ],
   "exclude": [
     "node_modules/**",
