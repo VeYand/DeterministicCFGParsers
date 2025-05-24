@@ -4,9 +4,9 @@ import {parseGrammar} from './grammar/parser'
 import {eliminateLeftRecursion} from './grammar/refactorer'
 
 const input = `
-S -> BEGIN stmt_list recursion END
-stmt_list -> BEGIN
-recursion -> recursion END | END
+S -> S PLUS T | T
+T -> T MINUS F | F
+F -> LESS S GREATER | IDENTIFIER
 `
 
 const parseGrammarAndCheck = (inputGrammar: string): Grammar => {

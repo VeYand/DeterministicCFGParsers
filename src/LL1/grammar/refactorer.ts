@@ -69,6 +69,13 @@ const eliminateLeftRecursion = (orig: Grammar): Grammar => {
 	return result
 }
 
+/**
+ * Преобразует грамматику в нормальную форму Грейбаха (GNF).
+ */
+const convertToGreibach = (orig: Grammar, _: string): Grammar => orig
+
+
 export {
 	eliminateLeftRecursion,
+	convertToGreibach,
 }

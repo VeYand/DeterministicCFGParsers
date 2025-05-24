@@ -13,6 +13,10 @@ type Grammar = {
 const newTerminal = (value: string): Terminal => ({type: 'terminal', value})
 const newNonTerminal = (name: string): NonTerminal => ({type: 'nonterminal', name})
 
+const isTerminal = (s: Symbol): s is Terminal => s.type === 'terminal'
+
+const isNonTerminal = (s: Symbol): s is NonTerminal => s.type === 'nonterminal'
+
 export type {
 	Terminal,
 	NonTerminal,
@@ -25,4 +29,6 @@ export {
 	EPSILON,
 	newTerminal,
 	newNonTerminal,
+	isTerminal,
+	isNonTerminal,
 }
