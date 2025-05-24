@@ -13,8 +13,14 @@ class Stack<T> {
 		this.storage.push(item)
 	}
 
-	pop(): T | undefined {
-		return this.storage.pop()
+	pop(): T {
+		const p = this.storage.pop()
+
+		if (p === undefined) {
+			throw new Error('Cannot pop on empty stack')
+		}
+
+		return p
 	}
 
 	peek(): T | undefined {
