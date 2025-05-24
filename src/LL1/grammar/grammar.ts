@@ -18,6 +18,7 @@ export type {
 	NonTerminal,
 	Symbol,
 	Grammar,
+	Production,
 }
 
 export {

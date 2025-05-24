@@ -29,13 +29,19 @@ const TERMINAL_NAMES = new Set<string>(
  * Терминалы распознаются по наличию в TERMINAL_NAMES,
  * всё остальное — нетерминалы.
  */
-const parseGrammar = (input: string): Grammar => {
+const parseGrammar = (input: string): [Grammar, string] => {
 	const grammar: Grammar = {}
 
 	const lines = input
 		.split(LINE_SEPARATOR)
 		.map(l => l.trim())
 		.filter(l => l && !l.startsWith('//') && !l.startsWith('#'))
+
+	if (lines.length === 0) {
+		throw new Error('Empty grammar')
+	}
+
+	let firstNonTerminal: string | null = null
 
 	for (const rawLine of lines) {
 		const [lhsRaw, rhsRaw] = rawLine.split(ARROW).map(s => s.trim())
@@ -48,6 +54,10 @@ const parseGrammar = (input: string): Grammar => {
 			throw new Error(`Invalid nonterminal on LHS: "${lhsRaw}"`)
 		}
 		const ntName = lhsRaw
+
+		if (firstNonTerminal === null) {
+			firstNonTerminal = ntName
+		}
 
 		// Разделяем альтернативы через |
 		const alternatives = rhsRaw.split(ALT_SEPARATOR).map(a => a.trim())
@@ -64,7 +74,11 @@ const parseGrammar = (input: string): Grammar => {
 		}
 	}
 
-	return grammar
+	if (firstNonTerminal === null) {
+		throw new Error('No nonterminals found in grammar')
+	}
+
+	return [grammar, firstNonTerminal]
 }
 
 /**
