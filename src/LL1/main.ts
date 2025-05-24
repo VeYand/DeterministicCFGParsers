@@ -1,4 +1,4 @@
-import {checkLL1, checkProductive, checkReachable} from './grammar/checker'
+import {checkProductive, checkReachable} from './grammar/checker'
 import {Grammar} from './grammar/grammar'
 import {parseGrammar} from './grammar/parser'
 
@@ -12,7 +12,6 @@ const parseGrammarAndCheck = (inputGrammar: string): Grammar => {
 
 	checkReachable(grammar, firstNonTerminal)
 	checkProductive(grammar)
-	checkLL1(grammar, firstNonTerminal)
 
 	return grammar
 }
