@@ -1,12 +1,21 @@
 import {checkProductive, checkReachable} from './grammar/checker'
 import {Grammar} from './grammar/grammar'
 import {parseGrammar} from './grammar/parser'
-import {convertToGreibach, eliminateLeftRecursion} from './grammar/refactorer'
+import {convertToGreibach, eliminateLeftRecursion, leftFactorGrammar} from './grammar/refactorer'
 
-const input = `
+const inputRecursive = `
 S -> S PLUS T | T
 T -> T MINUS F | F
 F -> LESS S GREATER | IDENTIFIER
+`
+
+// @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const inputFactor = `
+A -> PLUS MINUS
+A -> PLUS MINUS IDENTIFIER
+A -> BEGIN END DOT
+A -> BEGIN END COMMA
 `
 
 const parseGrammarAndCheck = (inputGrammar: string): Grammar => {
@@ -17,12 +26,13 @@ const parseGrammarAndCheck = (inputGrammar: string): Grammar => {
 
 	grammar = eliminateLeftRecursion(grammar)
 	grammar = convertToGreibach(grammar)
+	grammar = leftFactorGrammar(grammar)
 
 	return grammar
 }
 
 const ll = () => {
-	const grammar = parseGrammarAndCheck(input)
+	const grammar = parseGrammarAndCheck(inputRecursive)
 
 	console.log(JSON.stringify(grammar, null, 2))
 }

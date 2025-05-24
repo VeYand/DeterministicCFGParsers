@@ -1,4 +1,4 @@
-import {EPSILON, Grammar, isTerminal, newNonTerminal, Production} from './grammar'
+import {EPSILON, Grammar, isTerminal, newNonTerminal, Production, Symbol} from './grammar'
 
 /**
  * Убирает немедленную левую рекурсию из грамматики.
@@ -171,7 +171,145 @@ const convertToGreibach = (
 	return result
 }
 
+
+/**
+ * Выполняет левую факторизацию грамматики:
+ * для каждого нетерминала A, у которого есть ≥2 продукции с общим префиксом,
+ * выделяет этот префикс в отдельный нетерминал AFact…
+ *
+ * Особые случаи:
+ * - ε-продукции ([]) всегда сохраняются без изменений.
+ * - Если общий префикс пуст, факторизация не выполняется.
+ * - Генерируем имена AFact, AFact1, …, избегая коллизий.
+ * - Итеративно повторяем до тех пор, пока больше нигде не будет факторов.
+ */
+const leftFactorGrammar = (orig: Grammar): Grammar => {
+	// Копия входа, чтобы не мутировать
+	let current = {...orig}
+	const existingNT = new Set(Object.keys(orig))
+
+	// Ключ для символа в Map
+	const symbolKey = (s: Symbol): string =>
+		(s.type === 'terminal'
+			? `T:${s.value}`
+			: `N:${s.name}`)
+
+	// Проверка равенства символов
+	const symbolEqual = (a: Symbol, b: Symbol): boolean =>
+		a.type === b.type
+		&& (a.type === 'terminal'
+			? a.value === (b as any).value
+			: a.name === (b as any).name)
+
+	let changed: boolean
+
+	do {
+		changed = false
+		const next: Grammar = {}
+
+		for (const A of Object.keys(current)) {
+			const prods = current[A]!
+			if (prods.length < 2) {
+				// нечего факторизовать
+				next[A] = [...prods]
+				continue
+			}
+
+			// Разделяем ε-продукции отдельно
+			const epsProds = prods.filter(p => p.length === 1 && p[0]?.type === 'terminal' && p[0].value === EPSILON.value)
+			const nonEps = prods.filter(p => !(p.length === 1 && p[0]?.type === 'terminal' && p[0].value === EPSILON.value))
+
+			// Группируем по первому символу
+			const groups = new Map<string, Production[]>()
+			for (const p of nonEps) {
+				if (p.length === 0) {
+					continue
+				}
+				const key = symbolKey(p[0]!)
+				const arr = groups.get(key) ?? []
+				arr.push(p)
+				groups.set(key, arr)
+			}
+
+			const factProds: Production[] = []
+			const addedNTs: [string, Production[]][] = []
+
+			for (const group of groups.values()) {
+				if (group.length === 1) {
+					// одиночная продукция переходит как есть
+					factProds.push(group[0]!)
+					continue
+				}
+
+				// Найдём самый длинный общий префикс
+				let prefix = group[0] as Production
+				for (const p of group.slice(1)) {
+					let i = 0
+					// eslint-disable-next-line max-depth
+					while (
+						i < prefix.length
+						&& i < p.length
+						&& symbolEqual(prefix[i]!, p[i]!)
+					) {
+						i++
+					}
+					prefix = prefix.slice(0, i)
+					// eslint-disable-next-line max-depth
+					if (prefix.length === 0) {
+						break
+					}
+				}
+				if (prefix.length === 0) {
+					// ничего не факторизуем, переливаем группу
+					factProds.push(...group)
+					continue
+				}
+
+				// Факторизуем по prefix
+				changed = true
+				// создаём новый нетерминал
+				let factName = `${A}Fact`
+				let idx = 1
+				while (existingNT.has(factName)) {
+					factName = `${A}Fact${idx++}`
+				}
+				existingNT.add(factName)
+				const factNT = newNonTerminal(factName)
+
+				// A → prefix factNT
+				factProds.push([...prefix, factNT])
+
+				// factNT → остатки (или ε)
+				const factBodies: Production[] = group.map(p => {
+					const suffix = p.slice(prefix.length)
+					return suffix.length === 0
+						? [EPSILON]
+						: suffix
+				})
+				addedNTs.push([factName, factBodies])
+			}
+
+			// Собираем новые продукции A
+			next[A] = [
+				...factProds,
+				...epsProds,  // ε-продукции в конец
+			]
+
+			// Добавляем новые нетерминалы
+			for (const [ntName, bodies] of addedNTs) {
+				next[ntName] = bodies
+			}
+		}
+
+		current = next
+	} while (changed)
+
+	return current
+}
+
+
 export {
 	eliminateLeftRecursion,
 	convertToGreibach,
+	leftFactorGrammar,
 }
