@@ -1,7 +1,8 @@
-import {checkProductive, checkReachable} from './grammar/checker'
-import {parseGrammar} from './grammar/parser'
-import {convertToGreibach, eliminateLeftRecursion, leftFactorGrammar} from './grammar/refactorer'
+import {checkProductive, checkReachable} from '../common/grammar/checker'
+import {parseGrammar} from '../common/grammar/parser'
+import {convertToGreibach, eliminateLeftRecursion, leftFactorGrammar} from '../common/grammar/refactorer'
 import {parseInput} from './table/driver'
+import {dumpGrammarToFile} from './utils/print'
 
 const inputGrammarPascal = `
 Program  -> PROGRAM IDENTIFIER SEMICOLON Block DOT
@@ -37,8 +38,13 @@ END.
 `
 
 /** Full LL(1) pipeline: grammar-string + input-string → success boolean */
-const runLL1 = (grammarText: string, inputText: string): boolean => {
+const runLL1 = (grammarText: string, inputText: string, debug = true): boolean => {
 	let [grammar, start] = parseGrammar(grammarText)
+
+	if (debug) {
+		dumpGrammarToFile(grammar, start, 'original_grammar.txt')
+	}
+
 	checkReachable(grammar, start)
 	checkProductive(grammar)
 
@@ -46,7 +52,11 @@ const runLL1 = (grammarText: string, inputText: string): boolean => {
 	grammar = convertToGreibach(grammar)
 	grammar = leftFactorGrammar(grammar)
 
-	return parseInput(grammar, start, inputText)
+	if (debug) {
+		dumpGrammarToFile(grammar, start, 'prepared_grammar.txt')
+	}
+
+	return parseInput(grammar, start, inputText, debug)
 }
 
 

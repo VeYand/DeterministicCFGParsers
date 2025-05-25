@@ -1,8 +1,5 @@
 import {TOKEN_TYPES, TokenType} from './token'
 
-/**
- * Токен, который видит LL(1)-парсер.
- */
 type Token = {
 	/** Имя токена, соответствует терминалам грамматики */
 	type: string,

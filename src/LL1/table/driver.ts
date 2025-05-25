@@ -4,8 +4,9 @@ import {
 	EPSILON,
 	isTerminal,
 	isNonTerminal, Production,
-} from '../grammar/grammar'
-import {Token, tokenize} from '../lexer/lexer'
+} from '../../common/grammar/grammar'
+import {Token, tokenize} from '../../common/lexer/lexer'
+import {dumpParseTableCsvToFile} from '../utils/print'
 import {ParseTable, buildLL1ParseTable} from './table'
 
 /**
@@ -14,6 +15,7 @@ import {ParseTable, buildLL1ParseTable} from './table'
  * @param grammar — подготовленная грамматика (после всех трансформаций)
  * @param start — стартовый нетерминал
  * @param inputText — исходная строка для разбора
+ * @param debug
  * @returns true, если разбор успешен
  * @throws Error с подробным описанием позиции и ожиданий при ошибке
  */
@@ -21,6 +23,7 @@ const parseInput = (
 	grammar: Grammar,
 	start: string,
 	inputText: string,
+	debug: boolean,
 ): boolean => {
 	// 1. Лексический анализ
 	const tokens: Token[] = tokenize(inputText)
@@ -28,6 +31,10 @@ const parseInput = (
 
 	// 2. Построение таблицы разбора
 	const table: ParseTable = buildLL1ParseTable(grammar, start)
+
+	if (debug) {
+		dumpParseTableCsvToFile(table, 'll_table.csv')
+	}
 
 	// 3. Инициализация стека: [ '$', start ]
 	const stack: Symbol[] = [

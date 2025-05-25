@@ -3,7 +3,7 @@ import {
 	Production,
 	EPSILON,
 	isTerminal,
-} from '../grammar/grammar'
+} from '../../common/grammar/grammar'
 import {computeFirst, firstOfSequence, computeFollow} from './firstfollowset'
 
 /**

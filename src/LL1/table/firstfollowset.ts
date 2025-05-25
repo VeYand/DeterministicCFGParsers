@@ -4,7 +4,7 @@ import {
 	EPSILON,
 	isTerminal,
 	isNonTerminal,
-} from '../grammar/grammar'
+} from '../../common/grammar/grammar'
 
 type FirstSet = Map<string, Set<string>>   // A → { terminal values ∪ ε }
 type FollowSet = Map<string, Set<string>>  // A → { terminal values ∪ '$' }
