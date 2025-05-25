@@ -4,7 +4,7 @@ import {convertToGreibach, eliminateLeftRecursion, leftFactorGrammar} from './gr
 import {parseInput} from './table/driver'
 
 const inputGrammarPascal = `
-S -> IDENTIFIER
+S -> IDENTIFIER IDENTIFIER | IDENTIFIER
 `
 
 const inputPascalProgram = `

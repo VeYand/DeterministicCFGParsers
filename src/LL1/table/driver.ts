@@ -79,12 +79,12 @@ const parseInput = (
 	}
 
 	// 5. Проверка, что все токены потреблены (остался только '$')
-	if (tokens[cur]?.type === '$') {
+	if (cur === tokens.length) {
 		return true
 	}
 	else {
 		throw new Error(
-			`Parse error: unconsumed input starting at token #${cur} ("${tokens[cur]?.text}")`,
+			`Parse error: unconsumed input at token #${cur} ("${tokens[cur]?.text}")`,
 		)
 	}
 }

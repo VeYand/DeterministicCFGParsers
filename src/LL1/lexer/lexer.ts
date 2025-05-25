@@ -25,6 +25,11 @@ const tokenize = (input: string): Token[] => {
 		// На каждом шаге ищем самый длинный матч среди всех TOKEN_TYPES
 		let bestMatch: {tt: TokenType, text: string} | null = null
 		for (const tt of TOKEN_TYPES) {
+			// Пропускаем «плохие» токены при поиске bestMatch
+			if (tt.name === 'BAD' || tt.name.startsWith('BAD_')) {
+				continue
+			}
+
 			const regex = new RegExp('^' + tt.regex)
 			const m = regex.exec(rest)
 			if (m && m.index === 0) {
@@ -36,7 +41,26 @@ const tokenize = (input: string): Token[] => {
 		}
 
 		if (!bestMatch) {
-			throw new Error(`Lexical error at pos ${pos}: unexpected character "${input[pos]}"`)
+			// Если без «плохишей» ничего не нашлось — пытаемся найти BAD, чтобы выбросить нужную ошибку
+			let badMatch: {tt: TokenType, text: string} | null = null
+			for (const tt of TOKEN_TYPES) {
+				if (tt.name !== 'BAD' && !tt.name.startsWith('BAD_')) {
+					continue
+				}
+				const regex = new RegExp('^' + tt.regex)
+				const m = regex.exec(rest)
+				if (m && m.index === 0) {
+					badMatch = {tt, text: m[0]}
+					break
+				}
+			}
+			if (badMatch) {
+				const {text} = badMatch
+				throw new Error(`Lexical error at pos ${pos}: bad token ${JSON.stringify(text)}`)
+			}
+			else {
+				throw new Error(`Lexical error at pos ${pos}: unexpected character "${input[pos]}"`)
+			}
 		}
 
 		const {tt, text} = bestMatch
