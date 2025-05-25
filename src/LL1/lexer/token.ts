@@ -31,6 +31,7 @@ const TOKEN_TYPES: TokenType[] = [
 	new TokenType('CHAR', '(C|c)(H|h)(A|a)(R|r)'),
 	new TokenType('LOOP', '(L|l)(O|o)(O|o)(P|p)'),
 	new TokenType('WHILE', '(W|w)(H|h)(I|i)(L|l)(E|e)'),
+	new TokenType('DO', '(D|d)(O|o)'),
 	new TokenType('PRINT', '(P|p)(R|r)(I|i)(N|n)(T|t)'),
 	new TokenType('READ', '(R|r)(E|e)(A|a)(D|d)'),
 	new TokenType('VAR', '(V|v)(A|a)(R|r)'),

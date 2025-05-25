@@ -89,7 +89,10 @@ const firstOfSequence = (seq: Symbol[], first: FirstSet): Set<string> => {
 			break
 		}
 		else {
-			const firstB = first.get(sym.name)!
+			const firstB = first.get(sym.name)
+			if (!firstB) {
+				throw new Error(`Internal error: no FIRST set for nonterminal "${sym.name}" — проверьте, что все нетерминалы объявлены в левой части правил`)
+			}
 			for (const t of firstB) {
 				if (t !== EPSILON.value) {
 					res.add(t)
