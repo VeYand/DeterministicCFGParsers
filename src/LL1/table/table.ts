@@ -1,10 +1,10 @@
+import {computeFirst, firstOfSequence, computeFollow} from '../../common/grammar/firstfollowset'
 import {
 	Grammar,
 	Production,
 	EPSILON,
 	isTerminal,
 } from '../../common/grammar/grammar'
-import {computeFirst, firstOfSequence, computeFollow} from './firstfollowset'
 
 /**
  * Тип ячейки таблицы: production или undefined

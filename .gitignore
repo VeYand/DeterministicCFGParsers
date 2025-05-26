@@ -1,7 +1,3 @@
 /node_modules/
 /.idea/
-/ll_table.csv
-/original_grammar.txt
-/prepared_grammar.txt
 package-lock.json
-package.json
