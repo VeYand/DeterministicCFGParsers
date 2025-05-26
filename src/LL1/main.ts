@@ -38,7 +38,7 @@ END.
 `
 
 /** Full LL(1) pipeline: grammar-string + input-string → success boolean */
-const runLL1 = (grammarText: string, inputText: string, debug = true): boolean => {
+const runLL1 = (grammarText: string, inputText: string, debug = true) => {
 	let [grammar, start] = parseGrammar(grammarText)
 
 	if (debug) {
@@ -56,7 +56,8 @@ const runLL1 = (grammarText: string, inputText: string, debug = true): boolean =
 		dumpGrammarToFile(grammar, start, 'prepared_grammar.txt')
 	}
 
-	return parseInput(grammar, start, inputText, debug)
+	const ok = parseInput(grammar, start, inputText, debug)
+	console.log('Parse success:', ok)
 }
 
 
