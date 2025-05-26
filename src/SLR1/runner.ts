@@ -1,5 +1,6 @@
 import {Grammar, Symbol, isTerminal} from '../common/grammar/grammar'
 import {tokenize, Token} from '../common/lexer/lexer'
+import {dumpSLRTableCsvToFile} from './print'
 import {buildSLRTable} from './slr'
 
 /**
@@ -29,7 +30,7 @@ function parseSLR(
 	const symbolStack: Symbol[] = []
 
 	if (debug) {
-		console.log('Tokens:', tokens.map(t => t.type).join(' '))
+		dumpSLRTableCsvToFile({ACTION, GOTO}, 'slr_action.csv', 'slr_goto.csv')
 	}
 
 	// 4) основной цикл

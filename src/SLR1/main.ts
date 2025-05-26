@@ -36,7 +36,6 @@ BEGIN
 END.
 `
 
-/** Full LL(1) pipeline: grammar-string + input-string → success boolean */
 const runSLR1 = (grammarText: string, inputText: string, debug = true) => {
 	const [grammar, start] = parseGrammar(grammarText)
 
