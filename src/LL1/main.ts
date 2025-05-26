@@ -42,7 +42,7 @@ const runLL1 = (grammarText: string, inputText: string, debug = true) => {
 	let [grammar, start] = parseGrammar(grammarText)
 
 	if (debug) {
-		dumpGrammarToFile(grammar, start, 'original_grammar.txt')
+		dumpGrammarToFile(grammar, start, 'll/original_grammar.txt')
 	}
 
 	checkReachable(grammar, start)
@@ -53,7 +53,7 @@ const runLL1 = (grammarText: string, inputText: string, debug = true) => {
 	grammar = leftFactorGrammar(grammar)
 
 	if (debug) {
-		dumpGrammarToFile(grammar, start, 'prepared_grammar.txt')
+		dumpGrammarToFile(grammar, start, 'll/prepared_grammar.txt')
 	}
 
 	const ok = parseInput(grammar, start, inputText, debug)

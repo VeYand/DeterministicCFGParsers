@@ -30,7 +30,7 @@ function parseSLR(
 	const symbolStack: Symbol[] = []
 
 	if (debug) {
-		dumpSLRTableCsvToFile({ACTION, GOTO}, 'slr_action.csv', 'slr_goto.csv')
+		dumpSLRTableCsvToFile({ACTION, GOTO}, 'slr/slr_action.csv', 'slr/slr_goto.csv')
 	}
 
 	// 4) основной цикл

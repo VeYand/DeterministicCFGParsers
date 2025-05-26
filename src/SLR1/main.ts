@@ -40,7 +40,7 @@ const runSLR1 = (grammarText: string, inputText: string, debug = true) => {
 	const [grammar, start] = parseGrammar(grammarText)
 
 	if (debug) {
-		dumpGrammarToFile(grammar, start, 'original_grammar.txt')
+		dumpGrammarToFile(grammar, start, 'slr/original_grammar.txt')
 	}
 
 	checkReachable(grammar, start)
