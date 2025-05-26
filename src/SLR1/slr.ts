@@ -28,17 +28,43 @@ function buildSLRTable(grammar: Grammar, start: string): SLRTable {
 	const ACTION: Record<number, Record<string, Action>> = {}
 	const GOTO: Record<number, Record<string, number>> = {}
 
-	// helper: записать в ACTION[i][a], проверяя конфликт
+	// helper: записать в ACTION[i][a], проверяя конфликт, но предпочитая shift над reduce
 	function setAction(i: number, a: string, act: Action) {
 		ACTION[i] = ACTION[i] || {}
-		const prev = ACTION[i]![a] as Action
+		const prev = ACTION[i]![a]
+
 		if (prev) {
-			// конфликт shift/reduce или reduce/reduce
+			// если уже стоит shift
+			if (prev.type === 'shift') {
+				// мы уже сделали shift — игнорируем любой reduce, новый shift с тем же to тоже можно игнорировать
+				return
+			}
+			// если новый action — shift, а предыдущий был reduce — заменяем reduce на shift
+			if (act.type === 'shift' && prev.type === 'reduce') {
+				ACTION[i]![a] = act
+				return
+			}
+			// если оба reduce и одинаковые — игнорируем
+			if (act.type === 'reduce' && prev.type === 'reduce'
+				&& prev.prod.lhs === act.prod.lhs
+				&& prev.prod.rhs.length === act.prod.rhs.length
+				&& prev.prod.rhs.every((s, idx) => {
+					const t = act.prod.rhs[idx]
+					return s.type === t?.type && (s.type === 'terminal'
+						? s.value === (t as any).value
+						: s.name === (t as any).name)
+				})
+			) {
+				return
+			}
+			// всё остальное — реальный конфликт
 			throw new Error(`SLR(1) conflict in state ${i} on '${a}': `
 				+ `${JSON.stringify(prev)} vs ${JSON.stringify(act)}`)
 		}
+
 		ACTION[i]![a] = act
 	}
+
 
 	// 3) заполняем ACTION и GOTO
 	for (let i = 0; i < states.length; i++) {

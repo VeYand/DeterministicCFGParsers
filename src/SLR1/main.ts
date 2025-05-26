@@ -4,36 +4,15 @@ import {dumpGrammarToFile} from '../LL1/utils/print'
 import {parseSLR} from './runner'
 
 const inputGrammarPascal = `
-Program  -> PROGRAM IDENTIFIER SEMICOLON Block DOT
-
-Block    -> Decls BEGIN Stmts END
-
-Decls    -> VAR VarList | ε
-VarList  -> IDENTIFIER COLON Type SEMICOLON VarList | IDENTIFIER COLON Type SEMICOLON
-
-Type     -> INT | REAL | CHAR
-
-Stmts  -> Stmt StmtsTail
-StmtsTail -> SEMICOLON Stmt StmtsTail | ε
-Stmt     -> IDENTIFIER ASSIGN Expr | IF Expr THEN Stmt | WHILE Expr DO Stmt
-
-Expr     -> Term Expr2
-Expr2    -> PLUS Term Expr2 | MINUS Term Expr2 | ε
-
-Term     -> Factor Term2
-Term2    -> MULTIPLICATION Factor Term2 | DIVIDE Factor Term2 | ε
-
-Factor   -> LEFT_PAREN Expr RIGHT_PAREN | IDENTIFIER | INTEGER | REAL
+S -> IDENTIFIER ASSIGN E
+E -> E PLUS T | T
+T -> T MINUS F | F
+F -> LEFT_PAREN E RIGHT_PAREN | IDENTIFIER | INTEGER
 `
 
 
 const inputPascalProgram = `
-PROGRAM Demo;
-VAR x: INT;
-BEGIN
-  x := 10;
-  x := x + 5 * (x - 2)
-END.
+x := 5 + y - 3
 `
 
 const runSLR1 = (grammarText: string, inputText: string, debug = true) => {
