@@ -5,7 +5,7 @@
     "ll1": "node eslint.mjs && tsc && npx tsx src/LL1/main.ts",
     "slr1-dev": "npx tsx src/SLR1/main.ts",
     "slr1": "node eslint.mjs && tsc && npx tsx src/SLR1/main.ts",
-    "test": "jest",
+    "test": "jest --verbose",
     "test:watch": "jest --watch"
   },
   "devDependencies": {
