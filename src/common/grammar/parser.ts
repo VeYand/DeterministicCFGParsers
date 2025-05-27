@@ -10,7 +10,7 @@ import {
 const LINE_SEPARATOR = /\r?\n/
 const ARROW = '->'
 const ALT_SEPARATOR = '|'
-const NONTERMINAL_NAME_REGEX = /^[A-Za-z][A-Za-z0-9_]*$/
+const NONTERMINAL_NAME_REGEX = /^[-<]?[A-Za-z][A-Za-z0-9_-]*[->]?$/
 
 /**
  * Собираем set имён всех терминальных токенов из лексера:

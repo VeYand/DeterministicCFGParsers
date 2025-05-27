@@ -1,39 +1,73 @@
 import {checkProductive, checkReachable} from '../common/grammar/checker'
 import {parseGrammar} from '../common/grammar/parser'
-import {convertToGreibach, eliminateLeftRecursion, leftFactorGrammar} from '../common/grammar/refactorer'
+import {eliminateLeftRecursion, leftFactorGrammar} from '../common/grammar/refactorer'
 import {parseInput} from './table/driver'
 import {dumpGrammarToFile} from './utils/print'
 
 const inputGrammarPascal = `
-Program  -> PROGRAM IDENTIFIER SEMICOLON Block DOT
+program -> PROGRAM identifier SEMICOLON block DOT
 
-Block    -> Decls BEGIN Stmts END
+block -> var_declaration BEGIN statement_sequence END
 
-Decls    -> VAR VarList | ε
-VarList  -> IDENTIFIER COLON Type SEMICOLON VarList | IDENTIFIER COLON Type SEMICOLON
+var_declaration -> VAR var_list | ε
+var_list -> identifier_list COLON type SEMICOLON var_list_tail
+identifier_list -> identifier COMMA identifier_list | identifier
+type -> ARRAY LEFT_BRACKET number DOT DOT number RIGHT_BRACKET OF primitive_type | primitive_type
+var_list_tail -> var_list | ε
+primitive_type -> INT | CHAR
 
-Type     -> INT | REAL | CHAR
+statement_sequence -> statement SEMICOLON statement_sequence | statement | ε
+statement -> assignment | if_statement | for_loop | compound_statement | writeln_call
 
-Stmts  -> Stmt StmtsTail
-StmtsTail -> SEMICOLON Stmt StmtsTail | ε
-Stmt     -> IDENTIFIER ASSIGN Expr | IF Expr THEN Stmt | WHILE Expr DO Stmt
+assignment -> variable ASSIGN expression
+variable -> identifier | identifier LEFT_BRACKET expression RIGHT_BRACKET
 
-Expr     -> Term Expr2
-Expr2    -> PLUS Term Expr2 | MINUS Term Expr2 | ε
+if_statement -> IF condition THEN statement
+compound_statement -> BEGIN statement_sequence END
 
-Term     -> Factor Term2
-Term2    -> MULTIPLICATION Factor Term2 | DIVIDE Factor Term2 | ε
+for_loop -> FOR identifier ASSIGN number TO expression DO statement
 
-Factor   -> LEFT_PAREN Expr RIGHT_PAREN | IDENTIFIER | INTEGER | REAL
+writeln_call -> WRITELN LEFT_PAREN expression RIGHT_PAREN
+
+expression -> simple_expression | simple_expression relop simple_expression
+simple_expression -> term addop simple_expression | term
+term -> factor mulop term | factor
+factor -> number | variable | LEFT_PAREN expression RIGHT_PAREN | addop factor
+
+condition -> expression
+relop -> EQ | NOT_EQ | LESS | LESS_EQ | GREATER | GREATER_EQ
+addop -> PLUS | MINUS | OR
+mulop -> MULTIPLICATION | DIV | MOD | AND
+number -> INTEGER
+identifier -> IDENTIFIER
 `
 
-
 const inputPascalProgram = `
-PROGRAM Demo;
-VAR x: INT;
+PROGRAM SortArray;
+VAR
+	a: ARRAY[1..5] OF INT;
+	i, j, t: INT;
 BEGIN
-  x := 10;
-  x := x + 5 * (x - 2)
+	a[1] := 5;
+	a[2] := 3;
+	a[3] := 4;
+	a[4] := 1 - -2;
+	a[5] := 2;
+	
+	FOR i := 1 TO 4
+	DO
+		FOR j := 1 TO 5 - i
+		DO
+			IF a[j] > a[j + 1]
+			THEN
+				BEGIN
+					t := a[j];
+					a[j] := a[j + 1];
+					a[j + 1] := t;
+				END;
+	FOR i := 1 TO 5
+	DO
+		WRITELN(a[i])
 END.
 `
 
@@ -49,7 +83,7 @@ const runLL1 = (grammarText: string, inputText: string, debug = true) => {
 	checkProductive(grammar)
 
 	grammar = eliminateLeftRecursion(grammar)
-	grammar = convertToGreibach(grammar)
+	// grammar = convertToGreibach(grammar)
 	grammar = leftFactorGrammar(grammar)
 
 	if (debug) {
