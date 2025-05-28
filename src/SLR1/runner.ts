@@ -1,4 +1,4 @@
-import {Grammar, Symbol, isTerminal} from '../common/grammar/grammar'
+import {Grammar, Symbol, isTerminal, EPSILON} from '../common/grammar/grammar'
 import {tokenize, Token} from '../common/lexer/lexer'
 import {dumpSLRTableCsvToFile} from './print'
 import {buildSLRTable} from './slr'
@@ -18,6 +18,19 @@ function parseSLR(
 	input: string,
 	debug = false,
 ): boolean {
+	// 0) нормализуем ε-продукции:
+	//    [EPSILON] → [] и выкидываем «ε» из любых остальных правых частей
+	for (const A of Object.keys(grammar)) {
+		grammar[A] = grammar[A]?.map(rhs => {
+			// если единственный символ — ε, делаем пустую продукцию
+			if (rhs.length === 1 && rhs[0]?.type === 'terminal' && rhs[0].value === EPSILON.value) {
+				return []
+			}
+			// иначе просто убираем все «ε» из rhs (хотя их там обычно не должно быть)
+			return rhs.filter(s => !(s.type === 'terminal' && s.value === EPSILON.value))
+		}) ?? []
+	}
+
 	// 1) лексический разбор
 	const tokens: Token[] = tokenize(input)
 	let pos = 0
