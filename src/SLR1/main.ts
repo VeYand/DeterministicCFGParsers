@@ -1,6 +1,6 @@
 import {checkProductive, checkReachable} from '../common/grammar/checker'
 import {parseGrammar} from '../common/grammar/parser'
-import {dumpGrammarToFile} from '../LL1/utils/print'
+import {dumpGrammarToFile} from '../common/utils/print'
 import {parseSLR} from './runner'
 
 const inputGrammarPascal = `

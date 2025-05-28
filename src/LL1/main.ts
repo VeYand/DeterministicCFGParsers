@@ -1,8 +1,8 @@
 import {checkProductive, checkReachable} from '../common/grammar/checker'
 import {parseGrammar} from '../common/grammar/parser'
 import {eliminateLeftRecursion, leftFactorGrammar} from '../common/grammar/refactorer'
+import {dumpGrammarToFile} from '../common/utils/print'
 import {parseInput} from './table/driver'
-import {dumpGrammarToFile} from './utils/print'
 
 const inputGrammarPascal = `
 program -> PROGRAM identifier SEMICOLON block DOT
