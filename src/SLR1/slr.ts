@@ -34,37 +34,33 @@ function buildSLRTable(grammar: Grammar, start: string): SLRTable {
 		const prev = ACTION[i]![a]
 
 		if (prev) {
-			// если уже стоит shift
-			if (prev.type === 'shift') {
-				// мы уже сделали shift — игнорируем любой reduce, новый shift с тем же to тоже можно игнорировать
-				return
-			}
-			// если новый action — shift, а предыдущий был reduce — заменяем reduce на shift
-			if (act.type === 'shift' && prev.type === 'reduce') {
+			// Разрешаем только конфликт shift/reduce на ELSE (висячее else)
+			if (
+				a === 'ELSE'
+				&& prev.type === 'reduce'
+				&& act.type === 'shift'
+			) {
+				// разрешаем shift, игнорируя reduce
 				ACTION[i]![a] = act
 				return
 			}
-			// если оба reduce и одинаковые — игнорируем
-			if (act.type === 'reduce' && prev.type === 'reduce'
-				&& prev.prod.lhs === act.prod.lhs
-				&& prev.prod.rhs.length === act.prod.rhs.length
-				&& prev.prod.rhs.every((s, idx) => {
-					const t = act.prod.rhs[idx]
-					return s.type === t?.type && (s.type === 'terminal'
-						? s.value === (t as any).value
-						: s.name === (t as any).name)
-				})
+
+			if (
+				prev.type === 'shift'
+				&& act.type === 'shift'
+				&& act.to === prev.to
 			) {
+				// разрешаем shift
+				ACTION[i]![a] = act
 				return
 			}
-			// всё остальное — реальный конфликт
+
 			throw new Error(`SLR(1) conflict in state ${i} on '${a}': `
 				+ `${JSON.stringify(prev)} vs ${JSON.stringify(act)}`)
 		}
 
 		ACTION[i]![a] = act
 	}
-
 
 	// 3) заполняем ACTION и GOTO
 	for (let i = 0; i < states.length; i++) {
@@ -98,6 +94,15 @@ function buildSLRTable(grammar: Grammar, start: string): SLRTable {
 				const prod = {lhs: it.lhs, rhs: it.rhs}
 				// для каждого a ∈ FOLLOW(A)
 				for (const a of follow.get(it.lhs)!) {
+					// НЕ создаём reduce-пункт для ε-продукции else_part при lookahead 'ELSE'
+					// eslint-disable-next-line max-depth
+					if (
+						it.rhs.length === 0           // ε-продукция
+						&& it.lhs === 'else_part'
+						&& a === 'ELSE'
+					) {
+						continue
+					}
 					setAction(i, a, {type: 'reduce', prod})
 				}
 			}

@@ -3,6 +3,7 @@ import {parseGrammar} from '../common/grammar/parser'
 import {dumpGrammarToFile} from '../common/utils/print'
 import {parseSLR} from './runner'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const inputGrammarPascal = `
 program -> PROGRAM identifier SEMICOLON block DOT
 
@@ -46,6 +47,7 @@ identifier -> IDENTIFIER
 `
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const inputPascalProgram = `
 PROGRAM SortArray;
 VAR
@@ -80,6 +82,52 @@ BEGIN
 	    a := a
 END.
 `
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const grammarSR = `
+A -> A PLUS
+A -> PLUS B
+B -> B PLUS
+B -> PLUS
+`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const programSR = `+ +`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const grammarLeft = `
+E -> E PLUS EQ | EQ
+`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const programLeft = `== + == + ==`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const grammarRight = `
+L -> EQ | EQ COMMA L
+`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const programRight = `== , == , ==`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const grammarUnreach = `
+S -> EQ
+A -> COMMA
+`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const programUnreach = `==`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const grammarUnprod = `
+S -> A
+A -> B
+B -> C
+`
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const programUnprod = ``
 
 const runSLR1 = (grammarText: string, inputText: string, debug = true) => {
 	const [grammar, start] = parseGrammar(grammarText)
