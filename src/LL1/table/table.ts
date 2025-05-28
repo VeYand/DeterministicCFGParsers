@@ -32,6 +32,7 @@ const buildLL1ParseTable = (
 		table[A] = {}
 	}
 
+	// Первый проход: обработка не-ε правил
 	for (const [A, prods] of Object.entries(grammar)) {
 		for (const prod of prods) {
 			// FIRST(α)
@@ -42,20 +43,27 @@ const buildLL1ParseTable = (
 				if (t === EPSILON.value) {
 					continue
 				}
+
 				if (table[A]![t]) {
 					throw new Error(`LL(1) conflict: table[${A}][${t}] is already set to production ${formatProd(table[A]![t]!)}; cannot assign ${formatProd(prod)}`)
 				}
 				table[A]![t] = prod
 			}
+		}
+	}
 
-			// Если ε ∈ FIRST(α), то для каждого b ∈ FOLLOW(A) добавляем prod
+	// Второй проход: обработка ε-правил (только для свободных ячеек)
+	for (const [A, prods] of Object.entries(grammar)) {
+		for (const prod of prods) {
+			const firstAlpha = firstOfSequence(prod, first)
+
 			if (firstAlpha.has(EPSILON.value)) {
 				for (const b of follow.get(A)!) {
 					// eslint-disable-next-line max-depth
-					if (table[A]![b]) {
-						throw new Error(`LL(1) ε-conflict: table[${A}][${b}] is already set to production ${formatProd(table[A]![b]!)}; cannot assign ${formatProd(prod)}`)
+					if (table[A]![b] === undefined) {
+						table[A]![b] = prod
 					}
-					table[A]![b] = prod
+					// Если ячейка уже занята - пропускаем (разрешаем конфликт в пользу не-ε правила)
 				}
 			}
 		}

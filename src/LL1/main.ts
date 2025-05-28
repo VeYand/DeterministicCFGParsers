@@ -17,12 +17,13 @@ var_list_tail -> var_list | ε
 primitive_type -> INT | CHAR
 
 statement_sequence -> statement SEMICOLON statement_sequence | statement | ε
-statement -> assignment | if_statement | for_loop | compound_statement | writeln_call
+statement -> assignment | if_statement | for_loop | compound_statement | writeln_call | ε 
 
 assignment -> variable ASSIGN expression
 variable -> identifier | identifier LEFT_BRACKET expression RIGHT_BRACKET
 
-if_statement -> IF condition THEN statement
+if_statement -> IF condition THEN statement else_part
+else_part -> ELSE statement | ε
 compound_statement -> BEGIN statement_sequence END
 
 for_loop -> FOR identifier ASSIGN number TO expression DO statement
@@ -48,6 +49,7 @@ VAR
 	a: ARRAY[1..5] OF INT;
 	i, j, t: INT;
 BEGIN
+	;;
 	a[1] := 5;
 	a[2] := 3;
 	a[3] := 4;
@@ -63,11 +65,14 @@ BEGIN
 				BEGIN
 					t := a[j];
 					a[j] := a[j + 1];
-					a[j + 1] := t;
+					a[j + 1] := t
+				END
+			ELSE
+				BEGIN
 				END;
 	FOR i := 1 TO 5
 	DO
-		WRITELN(a[i])
+		WRITELN(a[i]);
 END.
 `
 
@@ -83,7 +88,6 @@ const runLL1 = (grammarText: string, inputText: string, debug = true) => {
 	checkProductive(grammar)
 
 	grammar = eliminateLeftRecursion(grammar)
-	// grammar = convertToGreibach(grammar)
 	grammar = leftFactorGrammar(grammar)
 
 	if (debug) {
