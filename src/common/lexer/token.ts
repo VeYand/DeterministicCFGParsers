@@ -38,7 +38,6 @@ const TOKEN_TYPES: TokenType[] = [
 	new TokenType('FOR', '(F|f)(O|o)(R|r)'),
 	new TokenType('VAR', '(V|v)(A|a)(R|r)'),
 	new TokenType('READ', '(R|r)(E|e)(A|a)(D|d)'),
-	new TokenType('VAR', '(V|v)(A|a)(R|r)'),
 	new TokenType('AND', '(A|a)(N|n)(D|d)'),
 	new TokenType('DIV', '(D|d)(I|i)(V|v)'),
 	new TokenType('MOD', '(M|m)(O|o)(D|d)'),

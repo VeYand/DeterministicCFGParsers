@@ -33,7 +33,7 @@ const parseInput = (
 	const table: ParseTable = buildLL1ParseTable(grammar, start)
 
 	if (debug) {
-		dumpParseTableCsvToFile(table, 'll/ll_table.csv')
+		dumpParseTableCsvToFile(grammar)
 	}
 
 	// 3. Инициализация стека: [ '$', start ]

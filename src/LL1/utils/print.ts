@@ -1,33 +1,19 @@
 import {writeFileSync} from 'fs'
-import {ParseTable} from '../table/table'
+import {run} from '../../../trash/ll/run'
+import {Grammar} from '../../common/grammar/grammar'
 
-/**
- * Сохраняет LL(1) таблицу разбора в CSV-файл.
- * @param table — таблица LL(1)
- * @param outPath — путь к файлу
- */
-const dumpParseTableCsvToFile = (table: ParseTable, outPath: string): void => {
+const dumpParseTableCsvToFile = (grammar: Grammar): void => {
 	const lines: string[] = []
-	lines.push(['NonTerminal', 'Lookahead', 'Production'].join(','))
 
-	for (const [A, row] of Object.entries(table)) {
-		for (const [t, prod] of Object.entries(row)) {
-			if (!prod) {
-				continue
-			}
-
-			const rhs = prod.map(sym =>
-				(sym.type === 'terminal'
-					? sym.value === 'ε' ? 'ε' : sym.value
-					: sym.name),
-			).join(' ')
-
-			const rhsCsv = `"${rhs.replace(/"/g, '""')}"`
-			lines.push([A, t, rhsCsv].join(','))
+	for (const key of Object.keys(grammar)) {
+		for (const prod of grammar[key]!) {
+			const symbols = prod.map(symbol => (symbol.type === 'terminal' ? symbol.value : `<${symbol.name}>`))
+			lines.push(`<${key}> -> ${symbols.join(' ')}`)
 		}
 	}
 
-	writeFileSync(outPath, lines.join('\n'), 'utf-8')
+	writeFileSync('ll/temp.txt', lines.join('\n'), 'utf-8')
+	run('ll/temp.txt', 'll/ll_table.csv')
 }
 
 export {

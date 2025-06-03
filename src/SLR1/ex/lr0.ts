@@ -1,5 +1,5 @@
 // src/SLR0/lr0.ts
-import {Grammar, Symbol, isNonTerminal, isTerminal, newNonTerminal} from '../common/grammar/grammar'
+import {Grammar, Symbol, isNonTerminal, isTerminal, newNonTerminal} from '../../common/grammar/grammar'
 
 /** LR(0)-элемент (item) A → α·β */
 type Item = {

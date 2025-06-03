@@ -18,6 +18,10 @@ function parseSLR(
 	input: string,
 	debug = false,
 ): boolean {
+	if (debug) {
+		dumpSLRTableCsvToFile(grammar)
+	}
+
 	// 0) нормализуем ε-продукции:
 	//    [EPSILON] → [] и выкидываем «ε» из любых остальных правых частей
 	for (const A of Object.keys(grammar)) {
@@ -41,10 +45,6 @@ function parseSLR(
 	// 3) инициализируем стеки: состояний и семантический (опционально)
 	const stateStack: number[] = [0]
 	const symbolStack: Symbol[] = []
-
-	if (debug) {
-		dumpSLRTableCsvToFile({ACTION, GOTO}, 'slr/slr_action.csv', 'slr/slr_goto.csv')
-	}
 
 	// 4) основной цикл
 	// eslint-disable-next-line no-constant-condition

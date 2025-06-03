@@ -1,6 +1,6 @@
 import {computeFirst, computeFollow} from '../common/grammar/firstfollowset'
 import {Grammar, Symbol, isTerminal} from '../common/grammar/grammar'
-import {buildLR0Collection, Item} from './lr0'
+import {buildLR0Collection, Item} from './ex/lr0'
 
 type ShiftAction = {type: 'shift', to: number}
 type ReduceAction = {type: 'reduce', prod: {lhs: string, rhs: Symbol[]}}
