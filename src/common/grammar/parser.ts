@@ -31,6 +31,7 @@ const TERMINAL_NAMES = new Set<string>(
  */
 const parseGrammar = (input: string): [Grammar, string] => {
 	const grammar: Grammar = {}
+	grammar['Z'] = []
 
 	const lines = input
 		.split(LINE_SEPARATOR)
@@ -78,7 +79,8 @@ const parseGrammar = (input: string): [Grammar, string] => {
 		throw new Error('No nonterminals found in grammar')
 	}
 
-	return [grammar, firstNonTerminal]
+	grammar['Z']?.push([newNonTerminal(firstNonTerminal)])
+	return [grammar, 'Z']
 }
 
 /**
