@@ -46,6 +46,9 @@ def main() -> int:
         print(f"Input file is not found: {args.input_file_name}")
         return 1
 
+    for k in grammar:
+        print(k.non_terminal, " -> ", ' '.join(k.right_part))
+
     with open(args.output_file_name, 'w') as output_file:
         try:
             table = create_table(grammar)

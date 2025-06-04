@@ -135,17 +135,17 @@ def add_new_strings(table: Table, num_of_str: int, grammar: List[Rule]) -> None:
 
 def create_table(grammar: List[Rule]) -> Table:
     # Автоматически добавляем правила для stmt_without_if, если их нет
-    has_stmt_without_if = any(r.non_terminal == 'stmt_without_if' for r in grammar)
-    if not has_stmt_without_if:
-        new_rules = [
-            Rule('stmt_without_if', ['assign', 'SEMICOLON']),
-            Rule('stmt_without_if', ['while_stmt']),
-            Rule('stmt_without_if', ['io', 'SEMICOLON']),
-            Rule('stmt_without_if', ['out', 'SEMICOLON']),
-            Rule('stmt_without_if', ['block_without_if']),
-            Rule('block_without_if', ['BEGIN', 'stmt_list', 'END'])
-        ]
-        grammar.extend(new_rules)
+#     has_stmt_without_if = any(r.non_terminal == 'stmt_without_if' for r in grammar)
+#     if not has_stmt_without_if:
+#         new_rules = [
+#             Rule('stmt_without_if', ['assign', 'SEMICOLON']),
+#             Rule('stmt_without_if', ['while_stmt']),
+#             Rule('stmt_without_if', ['io', 'SEMICOLON']),
+#             Rule('stmt_without_if', ['out', 'SEMICOLON']),
+#             Rule('stmt_without_if', ['block_without_if']),
+#             Rule('block_without_if', ['BEGIN', 'stmt_list', 'END'])
+#         ]
+#         grammar.extend(new_rules)
 
     table = Table(symbols=set(), strings=[])
     table.symbols = get_all_symbols(grammar)

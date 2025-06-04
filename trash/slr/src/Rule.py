@@ -2,7 +2,7 @@ from typing import List, Optional
 from dataclasses import dataclass
 from Symbol import Symbol
 
-EMPTY_SYMBOL = "e"
+EMPTY_SYMBOL = "ε"
 END_SYMBOL = "#"
 
 @dataclass

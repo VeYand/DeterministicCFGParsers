@@ -79,7 +79,7 @@ const parseGrammar = (input: string): [Grammar, string] => {
 		throw new Error('No nonterminals found in grammar')
 	}
 
-	grammar['Z']?.push([newNonTerminal(firstNonTerminal)])
+	grammar['Z']?.push([newNonTerminal(firstNonTerminal), newTerminal('#')])
 	return [grammar, 'Z']
 }
 

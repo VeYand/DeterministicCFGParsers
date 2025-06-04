@@ -76,6 +76,20 @@ BEGIN
 END.
 `
 
+
+const inputGrammarPascal2 = `
+S -> P ASSIGN E | IF E THEN S | IF THEN S ELSE S
+P -> I | I  LEFT_PAREN E RIGHT_PAREN
+E -> E PLUS T | T
+T -> T MULTIPLICATION F | F
+F -> P | LEFT_PAREN E RIGHT_PAREN
+I -> BEGIN | END
+`
+
+const inputPascalProgram2 = `
++ BEGIN +
+`
+
 /** Full LL(1) pipeline: grammar-string + input-string → success boolean */
 const runLL1 = (grammarText: string, inputText: string, debug = true) => {
 	let [grammar, start] = parseGrammar(grammarText)
@@ -100,7 +114,7 @@ const runLL1 = (grammarText: string, inputText: string, debug = true) => {
 
 
 if (require.main === module) {
-	runLL1(inputGrammarPascal, inputPascalProgram)
+	runLL1(inputGrammarPascal2, inputPascalProgram)
 }
 
 export {}

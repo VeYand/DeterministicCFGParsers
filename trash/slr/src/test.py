@@ -2,7 +2,7 @@ from typing import List, Dict, Set, Optional, Tuple
 from dataclasses import dataclass
 from io import TextIOBase
 
-EMPTY_SYMBOL = "e"
+EMPTY_SYMBOL = "ε"
 END_SYMBOL = "#"
 END_SYMBOL_IN_TABLE = "R"
 
