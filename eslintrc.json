@@ -529,9 +529,6 @@
                     "error"
                 ],
                 "@typescript-eslint/no-floating-promises": "off",
-                "@typescript-eslint/no-for-in-array": [
-                    "error"
-                ],
                 "@typescript-eslint/no-inferrable-types": [
                     "error",
                     {
